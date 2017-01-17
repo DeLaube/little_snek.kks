@@ -1,1 +1,1 @@
-print("hello my nem is littl snek")
+print("hello my nem s littl snek")
