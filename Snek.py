@@ -48,7 +48,7 @@ def makeGUI():
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
-    pygame.display.set_caption('Gitterbeispiel')
+    pygame.display.set_caption('Snek')
 
     # Text für den Endbildschirm
     fontObj = pygame.font.Font('freesansbold.ttf', 32)
@@ -62,7 +62,7 @@ def makeGUI():
 
     pygame.key.set_repeat(50, 50)
     while True:  # the main game loop
-        DISPLAYSURF.fill(WHITE)
+        DISPLAYSURF.fill(BLACK)
 
         for event in pygame.event.get():  # event handling loop
 
@@ -73,7 +73,7 @@ def makeGUI():
 
 
 
-                # Der Blaue
+                # Der Blaue Bewegung
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     if my_feld.der_blaue['dx'] == 0:
                         my_feld.der_blaue['dx'] = -1
@@ -105,28 +105,55 @@ def makeGUI():
 
                 my_feld.felder[i][j] = (my_feld.felder[i][j] + 1) % 2
 
+        #Gitter im Spielfeld
         for x in range(0, WINDOWWIDTH, CELLSIZE):  # draw vertical lines
-            pygame.draw.line(DISPLAYSURF, DARKGRAY, (x, 0), (x, WINDOWHEIGHT))
+            pygame.draw.line(DISPLAYSURF, WHITE, (x, 0), (x, WINDOWHEIGHT))
         for y in range(0, WINDOWHEIGHT, CELLSIZE):  # draw horizontal lines
-            pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
+            pygame.draw.line(DISPLAYSURF, WHITE, (0, y), (WINDOWWIDTH, y))
 
+        #Rand
         for i in range(len(my_feld.felder)):
             for j in range(len(my_feld.felder[i])):
                 if my_feld.felder[i][j] == 1:
                     x, y = board_to_pixel_koord(i, j, CELLSIZE)
                     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-                    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+                    pygame.draw.rect(DISPLAYSURF, GREEN, appleRect)
 
 
 
 
+        #Stopp bei Kollision mit Wand
         if my_feld.felder[my_feld.der_blaue['x'] + my_feld.der_blaue['dx']] \
                 [my_feld.der_blaue['y'] + my_feld.der_blaue['dy']] == 0:
             my_feld.der_blaue['x'] = my_feld.der_blaue['x'] + my_feld.der_blaue['dx']
             my_feld.der_blaue['y'] = my_feld.der_blaue['y'] + my_feld.der_blaue['dy']
         else:
-            my_feld.der_blaue['dy'] = 0
-            my_feld.der_blaue['dx'] = 0
+
+            my_feld.der_blaue['x'] = 0
+            my_feld.der_blaue['y'] = 0
+            #Game Over
+            #Text für den Endbildschirm
+            fontObj = pygame.font.Font('freesansbold.ttf', 48)
+            textSurfaceObj = fontObj.render('Little snek is ded..', True, WHITE, RED)
+            textSurfaceObj2 = fontObj.render('Click "Esc" to quit life', True, WHITE)
+            textRectObj = textSurfaceObj.get_rect()
+            textRectObj2 = textSurfaceObj2.get_rect()
+
+            textRectObj.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
+            textRectObj2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 + 50)
+
+            DISPLAYSURF.fill(RED)
+            DISPLAYSURF.blit(textSurfaceObj, textRectObj)
+            DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+            pygame.display.update()
+            while True:
+                for event in pygame.event.get():  # event handling loop
+                    if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE):
+                        pygame.quit()
+                        sys.exit()
+
+
+
         make_rectangle_green(my_feld.der_blaue, DISPLAYSURF, CELLSIZE)
 
         pygame.display.update()
@@ -142,7 +169,7 @@ def pixel_to_board_koord(x, y, width):
 
 
 def make_rectangle_red(liste, display, size):
-    x, y = board_to_pixel_koord(liste[0], liste[1], size)
+    x, y = board_to_pixel_koord(liste['x'], liste['y'], size)
     the_rect = pygame.Rect(x, y, size, size)
     pygame.draw.rect(display, RED, the_rect)
 
