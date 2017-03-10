@@ -23,9 +23,12 @@ class Spiel:
             self.felder[i][groesse - 1] = 1
 
 
-        self.snek_head = {'x': 12, 'y': 12, 'dx': 0, 'dy': 0}
-        self.snek_tail = {'x': 11, 'y': 12, 'dx': 0, 'dy': 0}
-        
+        self.snek_head = {'x': 9, 'y': 12, 'dx': 0, 'dy': 0}
+        self.snek_tail = {'x': 8, 'y': 12, 'dx': 0, 'dy': 0}
+        self.snek_food = {'x': random.randint(1, 25), 'y': random.randint(1,25), 'dx': 0, 'dy': 0}
+        self.snek_body = {'x': 0, 'y': 0, 'dx': 0, 'dy': 0}
+
+
 def makeGUI():
     FPS = 10
     WINDOWWIDTH = 540
@@ -125,9 +128,15 @@ def makeGUI():
                     pygame.draw.rect(DISPLAYSURF, GREEN, appleRect)
 
 
+        #Kollision mit food
+        if my_feld.snek_head['x'] == my_feld.snek_food['x'] and my_feld.snek_head['y'] == my_feld.snek_food['y']:
+            my_feld.snek_food['x'] = random.randint(1,25)
+            my_feld.snek_food['y'] = random.randint(1, 25)
 
 
-        #Stopp bei Kollision mit Wand
+
+
+            #Stopp bei Kollision mit Wand
         if my_feld.felder[my_feld.snek_head['x'] + my_feld.snek_head['dx']] \
                 [my_feld.snek_head['y'] + my_feld.snek_head['dy']] == 0:
             my_feld.snek_tail['x'] = my_feld.snek_head['x']
@@ -163,6 +172,7 @@ def makeGUI():
 
         make_rectangle_green(my_feld.snek_head, DISPLAYSURF, CELLSIZE)
         make_rectangle_red(my_feld.snek_tail, DISPLAYSURF, CELLSIZE)
+        make_rectangle_blue(my_feld.snek_food, DISPLAYSURF, CELLSIZE)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
