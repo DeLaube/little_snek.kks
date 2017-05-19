@@ -23,11 +23,14 @@ class Spiel:
             self.felder[i][groesse - 1] = 1
 
 
-        self.der_blaue = {'x': 2, 'y': 3, 'dx': 0, 'dy': 0}
+        self.snek_head = {'x': 9, 'y': 12, 'dx': 0, 'dy': 0}
+        self.snek_tail = {'x': 8, 'y': 12, 'dx': 0, 'dy': 0}
+        self.snek_food = {'x': random.randint(1, 25), 'y': random.randint(1,25), 'dx': 0, 'dy': 0}
+        self.snek_body = {'x': 0, 'y': 0, 'dx': 0, 'dy': 0}
 
 
 def makeGUI():
-    FPS = 12
+    FPS = 10
     WINDOWWIDTH = 540
     WINDOWHEIGHT = WINDOWWIDTH
     CELLSIZE = 20
@@ -75,27 +78,32 @@ def makeGUI():
 
                 # Der Blaue Bewegung
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
-                    if my_feld.der_blaue['dx'] == 0:
-                        my_feld.der_blaue['dx'] = -1
-                        my_feld.der_blaue['dy'] = 0
+                    if my_feld.snek_head['dx'] == 0:
+                        my_feld.snek_head['dx'] = -1
+                        my_feld.snek_head['dy'] = 0
+
 
 
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    if my_feld.snek_head['dx'] == 0:
+                        my_feld.snek_head['dx'] = 1
+                        my_feld.snek_head['dy'] = 0
 
-                    if my_feld.der_blaue['dx'] == 0:
-                        my_feld.der_blaue['dx'] = 1
-                        my_feld.der_blaue['dy'] = 0
+
 
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    if my_feld.der_blaue['dy'] == 0:
-                        my_feld.der_blaue['dy'] = -1
-                        my_feld.der_blaue['dx'] = 0
+                    if my_feld.snek_head['dy'] == 0:
+                        my_feld.snek_head['dy'] = -1
+                        my_feld.snek_head['dx'] = 0
+
+
 
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    if my_feld.snek_head['dy'] == 0:
+                        my_feld.snek_head['dy'] = 1
+                        my_feld.snek_head['dx'] = 0
 
-                    if my_feld.der_blaue['dy'] == 0:
-                        my_feld.der_blaue['dy'] = 1
-                        my_feld.der_blaue['dx'] = 0
+
 
             #Schwarze Hitbox bei Mausklick
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -120,21 +128,29 @@ def makeGUI():
                     pygame.draw.rect(DISPLAYSURF, GREEN, appleRect)
 
 
+        #Kollision mit food
+        if my_feld.snek_head['x'] == my_feld.snek_food['x'] and my_feld.snek_head['y'] == my_feld.snek_food['y']:
+            my_feld.snek_food['x'] = random.randint(1,25)
+            my_feld.snek_food['y'] = random.randint(1, 25)
 
 
-        #Stopp bei Kollision mit Wand
-        if my_feld.felder[my_feld.der_blaue['x'] + my_feld.der_blaue['dx']] \
-                [my_feld.der_blaue['y'] + my_feld.der_blaue['dy']] == 0:
-            my_feld.der_blaue['x'] = my_feld.der_blaue['x'] + my_feld.der_blaue['dx']
-            my_feld.der_blaue['y'] = my_feld.der_blaue['y'] + my_feld.der_blaue['dy']
+
+
+            #Stopp bei Kollision mit Wand
+        if my_feld.felder[my_feld.snek_head['x'] + my_feld.snek_head['dx']] \
+                [my_feld.snek_head['y'] + my_feld.snek_head['dy']] == 0:
+            my_feld.snek_tail['x'] = my_feld.snek_head['x']
+            my_feld.snek_tail['y'] = my_feld.snek_head['y']
+            my_feld.snek_head['x'] = my_feld.snek_head['x'] + my_feld.snek_head['dx']
+            my_feld.snek_head['y'] = my_feld.snek_head['y'] + my_feld.snek_head['dy']
         else:
 
-            my_feld.der_blaue['x'] = 0
-            my_feld.der_blaue['y'] = 0
+            my_feld.snek_head['x'] = 0
+            my_feld.snek_head['y'] = 0
             #Game Over
             #Text für den Endbildschirm
             fontObj = pygame.font.Font('freesansbold.ttf', 48)
-            textSurfaceObj = fontObj.render('Little snek is ded..', True, WHITE, RED)
+            textSurfaceObj = fontObj.render('Little snek iz ded..', True, WHITE, RED)
             textSurfaceObj2 = fontObj.render('Click "Esc" to quit life', True, WHITE)
             textRectObj = textSurfaceObj.get_rect()
             textRectObj2 = textSurfaceObj2.get_rect()
@@ -154,7 +170,9 @@ def makeGUI():
 
 
 
-        make_rectangle_green(my_feld.der_blaue, DISPLAYSURF, CELLSIZE)
+        make_rectangle_green(my_feld.snek_head, DISPLAYSURF, CELLSIZE)
+        make_rectangle_red(my_feld.snek_tail, DISPLAYSURF, CELLSIZE)
+        make_rectangle_blue(my_feld.snek_food, DISPLAYSURF, CELLSIZE)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
