@@ -77,16 +77,22 @@ def makeGUI():
         fontObj = pygame.font.Font('freesansbold.ttf', 40)
         textSurfaceObj = fontObj.render('Little snek iz ded.. ', True, WHITE, RED)
         textSurfaceObj2 = fontObj.render('Click "Esc" to quit life', True, WHITE)
+        textSurfaceObj3 = fontObj.render('Score:  '+str(score), True, WHITE)
         textRectObj = textSurfaceObj.get_rect()
         textRectObj2 = textSurfaceObj2.get_rect()
+        textRectObj3 = textSurfaceObj3.get_rect()
 
         textRectObj.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
         textRectObj2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 + 50)
+        textRectObj3.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 5 + 50)
 
         DISPLAYSURF.fill(RED)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
         DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+        DISPLAYSURF.blit(textSurfaceObj3, textRectObj3)
+
         pygame.display.update()
+
         while True:
             for event in pygame.event.get():  # event handling loop
                 if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE):
@@ -165,10 +171,12 @@ def makeGUI():
                 # Stopp bei Kollision mit Wand
         if my_feld.snek[0]['x'] == 0 or my_feld.snek[0]['x'] == 26 or \
             my_feld.snek[0]['y'] == 0 or my_feld.snek[0]['y'] == 26:
+            score = len(my_feld.snek) -2
             game_over()
 
         for i in range(1, len(my_feld.snek)):
             if my_feld.snek[0] == my_feld.snek[i]:
+                score = len(my_feld.snek) - 2
                 game_over()
 
         for i in my_feld.snek:
