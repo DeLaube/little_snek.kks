@@ -238,3 +238,5 @@ def make_rectangle_green(dict, display, size):
 
 if __name__ == '__main__':
     start_screen()
+
+    #scurr
