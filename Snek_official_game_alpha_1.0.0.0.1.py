@@ -11,6 +11,8 @@ GREY = (220, 220, 220)
 bg = pygame.image.load("little_snek.jpg")
 gowbg = pygame.image.load("snekizded.jpg")
 goebg = pygame.image.load("snekeat.jpg")
+startbg = pygame.image.load("snakestartscreen.jpg")
+
 top_score_liste = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 top_score_liste = sorted(top_score_liste)
 
@@ -377,13 +379,14 @@ def new_start_screen():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     fontObj = pygame.font.Font('freesansbold.ttf', 35)
     fontObj2 = pygame.font.Font('freesansbold.ttf', 60)
-    textSurfaceObj = fontObj.render('Press "Space" to start game!', True, GREEN)
+    textSurfaceObj = fontObj.render('Press "Space" to start game!', True, BLACK)
     textRectObj = textSurfaceObj.get_rect()
-    textRectObj.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 + 80)
-    DISPLAYSURF.fill(BLACK)
+    textRectObj.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 + 220)
+    DISPLAYSURF.blit(startbg, [-50, -50])
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
-    textSurfaceObj2 = fontObj2.render("~~Little Snek~~", True, GREEN)
+
+    textSurfaceObj2 = fontObj2.render("~~Little Snek~~", True, BLACK)
     textRectObj2 = textSurfaceObj2.get_rect()
     textRectObj2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 - 180)
     DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
