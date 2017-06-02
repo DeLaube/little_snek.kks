@@ -13,9 +13,13 @@ gowbg = pygame.image.load("snekizded.jpg")
 goebg = pygame.image.load("snekeat.jpg")
 startbg = pygame.image.load("snakestartscreen.jpg")
 
-top_score_liste = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-top_score_liste = sorted(top_score_liste)
+skyr = open("Hello", "r")
+skyr2 = open("Hello2", "r")
+highest_score = [skyr.read(2)]
+name_highs = [skyr2.read(20)]
 
+
+list = []
 class Spiel:
     def __init__(self, groesse):
         self.felder = [[0 for j in range(groesse)] for i in range(groesse)]
@@ -37,6 +41,17 @@ class Spiel:
 
     def hinzufuegen(self, nfeld):
         self.snek.insert(0, nfeld)
+
+def write_score(banane):
+    scurr = open("Hello", "a")
+    for i in range(0, len(banane)):
+        scurr.write(str(banane[i])+"\n")
+
+def read_score(i):
+    scurr = open("Hello", "r")
+    yourResult = [line.replace("\n", "").replace("["," ").replace("]"," ").split(',') for line in scurr]
+    print(yourResult[i][0])
+
 def add_score(list,score):
     list.append(score)
 
@@ -44,9 +59,11 @@ def sort_list():
     global top_score_liste
     top_score_liste = sorted(top_score_liste)
 
-
-
 def makeGUI(FPS=10):
+
+
+
+
     FPS = FPS
     WINDOWWIDTH = 540
     WINDOWHEIGHT = WINDOWWIDTH
@@ -59,8 +76,6 @@ def makeGUI(FPS=10):
     pygame.display.set_caption('Snek')
 
     my_feld = Spiel(CELLWIDTH)
-
-
 
     kup = {'x': -1, 'y': 0}
     kdown = {'x': 1, 'y': 0}
@@ -146,8 +161,6 @@ def makeGUI(FPS=10):
         global top_score_liste
         DISPLAYSURF.fill(BLACK)
 
-
-
         npunkt = {'x': my_feld.snek[0]['x'] + richtung['x'], 'y': my_feld.snek[0]['y'] + richtung['y']}
         my_feld.verschieben(npunkt)
 
@@ -197,7 +210,6 @@ def makeGUI(FPS=10):
         textRectObj.center = (WINDOWWIDTH / 2 +140, WINDOWHEIGHT / 2 - 260)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
-
         # Kollision mit food
         for i in range(len(my_feld.snek)):
             if (my_feld.snek[i]['x'] == my_feld.snek_food['x'] and my_feld.snek[i]['y'] == my_feld.snek_food['y']):
@@ -217,8 +229,16 @@ def makeGUI(FPS=10):
         if my_feld.snek[0]['x'] == 0 or my_feld.snek[0]['x'] == 26 or \
                         my_feld.snek[0]['y'] == 0 or my_feld.snek[0]['y'] == 26:
             score = len(my_feld.snek) - 5
-            add_score(top_score_liste,score)
-            sort_list()
+
+            if score > int(highest_score[0]):
+                name = str(input("Your name: "))
+                skyr = open("Hello","w")
+                skyr.write(str(score))
+                skyr2 = open("Hello2","w")
+                skyr2.write(name)
+
+            else:
+                pass
             game_over_wall()
 
         #Stopp bei Kollision mit Körper
@@ -245,62 +265,27 @@ def score_menu():
     pygame.display.set_caption("Snek")
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     fontObj = pygame.font.Font('freesansbold.ttf', 35)
-    fontdifficulty = pygame.font.Font('freesansbold.ttf', 20)
-    textSurfaceObj = fontObj.render("Top 10 Scores", True, GREEN)
+    fontdifficulty = pygame.font.Font('freesansbold.ttf', 60)
+    textSurfaceObj = fontObj.render("High Score", True, GREEN)
     textRectObj = textSurfaceObj.get_rect()
     textRectObj.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 -200 )
     DISPLAYSURF.fill(BLACK)
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
-    textSurfaceObj2 = fontdifficulty.render("1.  "+str(top_score_liste[-1]), True, GREEN)
+    skyr = open("Hello", "r")
+    skyr2 = open("Hello2", "r")
+    highest_score1 = [skyr.read(5)]
+    name_highs1 = [skyr2.read(20)]
+
+    textSurfaceObj2 = fontdifficulty.render(str(highest_score1[0]), True, GREEN)
     textRectObj2 = textSurfaceObj2.get_rect()
-    textRectObj2.center = ((30 + (80 / 2)), (110 + (40 / 2)))
+    textRectObj2.center = (270, 200)
     DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
 
-    textSurfaceObj3 = fontdifficulty.render("2.  "+str(top_score_liste[-2]), True, GREEN)
+    textSurfaceObj3 = fontdifficulty.render(str(name_highs1[0]), True, GREEN)
     textRectObj3 = textSurfaceObj3.get_rect()
-    textRectObj3.center = ((30 + (80 / 2)), (150 + (40 / 2)))
+    textRectObj3.center = (270, 350)
     DISPLAYSURF.blit(textSurfaceObj3, textRectObj3)
-
-    textSurfaceObj5 = fontdifficulty.render("3.  "+str(top_score_liste[-3]), True, GREEN)
-    textRectObj5 = textSurfaceObj5.get_rect()
-    textRectObj5.center = ((30 + (80 / 2)), (190 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj5, textRectObj5)
-
-    textSurfaceObj6 = fontdifficulty.render("4.  "+str(top_score_liste[-4]), True, GREEN)
-    textRectObj6 = textSurfaceObj6.get_rect()
-    textRectObj6.center = ((30 + (80 / 2)), (230 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj6, textRectObj6)
-
-    textSurfaceObj7 = fontdifficulty.render("5.  "+str(top_score_liste[-5]), True, GREEN)
-    textRectObj7 = textSurfaceObj7.get_rect()
-    textRectObj7.center = ((30 + (80 / 2)), (270 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj7, textRectObj7)
-
-    textSurfaceObj8 = fontdifficulty.render("6.  "+str(top_score_liste[-6]), True, GREEN)
-    textRectObj8 = textSurfaceObj8.get_rect()
-    textRectObj8.center = ((30 + (80 / 2)), (310 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj8, textRectObj8)
-
-    textSurfaceObj9 = fontdifficulty.render("7.  "+str(top_score_liste[-7]), True, GREEN)
-    textRectObj9 = textSurfaceObj9.get_rect()
-    textRectObj9.center = ((30 + (80 / 2)), (350 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj9, textRectObj9)
-
-    textSurfaceObj10 = fontdifficulty.render("8.  "+str(top_score_liste[-8]), True, GREEN)
-    textRectObj10 = textSurfaceObj10.get_rect()
-    textRectObj10.center = ((30 + (80 / 2)), (390 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj10, textRectObj10)
-
-    textSurfaceObj11 = fontdifficulty.render("9.  "+str(top_score_liste[-9]), True, GREEN)
-    textRectObj11 = textSurfaceObj11.get_rect()
-    textRectObj11.center = ((30 + (80 / 2)), (430 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj11, textRectObj11)
-
-    textSurfaceObj12 = fontdifficulty.render("10.  "+str(top_score_liste[-10]), True, GREEN)
-    textRectObj12 = textSurfaceObj12.get_rect()
-    textRectObj12.center = ((30 + (80 / 2)), (470 + (40 / 2)))
-    DISPLAYSURF.blit(textSurfaceObj12, textRectObj12)
 
     back_button = pygame.draw.rect(DISPLAYSURF, BLACK, (400, 470, 82, 40))
 
@@ -354,7 +339,6 @@ def selection_menu():
     textRectObj5.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 - 180)
     DISPLAYSURF.blit(textSurfaceObj5, textRectObj5)
 
-
     pygame.display.update()
     while True:
         for event in pygame.event.get():
@@ -385,7 +369,6 @@ def new_start_screen():
     DISPLAYSURF.blit(startbg, [-50, -50])
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
-
     textSurfaceObj2 = fontObj2.render("~~Little Snek~~", True, BLACK)
     textRectObj2 = textSurfaceObj2.get_rect()
     textRectObj2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2 - 180)
@@ -400,7 +383,6 @@ def new_start_screen():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     selection_menu()
-
 
 def start_screen():
     WINDOWWIDTH = 540
@@ -460,6 +442,7 @@ def start_screen():
                     makeGUI(15)
                 elif event.key == pygame.K_3:
                     makeGUI(20)
+
 def board_to_pixel_koord(i, j, width):
     return j * width, i * width
 
