@@ -52,12 +52,6 @@ def read_score(i):
     yourResult = [line.replace("\n", "").replace("["," ").replace("]"," ").split(',') for line in scurr]
     print(yourResult[i][0])
 
-def add_score(list,score):
-    list.append(score)
-
-def sort_list():
-    global top_score_liste
-    top_score_liste = sorted(top_score_liste)
 
 def makeGUI(FPS=10):
 
@@ -245,8 +239,15 @@ def makeGUI(FPS=10):
         for i in range(1, len(my_feld.snek)):
             if my_feld.snek[0] == my_feld.snek[i]:
                 score = len(my_feld.snek) - 5
-                add_score(top_score_liste, score)
-                sort_list()
+                if score > int(highest_score[0]):
+                    name = str(input("Your name: "))
+                    skyr = open("Hello", "w")
+                    skyr.write(str(score))
+                    skyr2 = open("Hello2", "w")
+                    skyr2.write(name)
+
+                else:
+                    pass
                 game_over_eat_itself()
 
         #Farbe des Körpers
